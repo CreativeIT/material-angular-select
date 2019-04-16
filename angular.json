@@ -27,9 +27,12 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/material-design-lite/src/material-design-lite.scss"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/material-design-lite/material.js"
+            ],
             "es5BrowserSupport": true
           },
           "configurations": {
@@ -128,6 +131,41 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": "e2e/tsconfig.e2e.json",
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "material-angular-select": {
+      "root": "projects/material-angular-select",
+      "sourceRoot": "projects/material-angular-select/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/material-angular-select/tsconfig.lib.json",
+            "project": "projects/material-angular-select/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/material-angular-select/src/test.ts",
+            "tsConfig": "projects/material-angular-select/tsconfig.spec.json",
+            "karmaConfig": "projects/material-angular-select/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/material-angular-select/tsconfig.lib.json",
+              "projects/material-angular-select/tsconfig.spec.json"
+            ],
             "exclude": [
               "**/node_modules/**"
             ]

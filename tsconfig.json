@@ -17,6 +17,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "material-angular-select": [
+        "dist/material-angular-select"
+      ],
+      "material-angular-select/*": [
+        "dist/material-angular-select/*"
+      ]
+    }
   }
 }
