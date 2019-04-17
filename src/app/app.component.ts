@@ -6,5 +6,12 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'ng-material-angular-select';
+  title = 'material-angular-select';
+  data = ['Minsk', 'Berlin', 'Moscow', 'NYC'];
+  currentValue = 'Minsk';
+  countries = ['Belarus', 'Poland', 'Italy', 'USA', 'Brazil', 'France', 'Russia', 'Finland', 'Estonia'];
+
+  selectedValue(data: { title: string, value: string }) {
+    this.currentValue = data.title;
+  }
 }
