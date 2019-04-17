@@ -6,22 +6,27 @@
     <div class="mdl-grid">
       <div class="mdl-cell--6-col">
         <h6>Simple select</h6>
-        <material-angular-select [data]="data" [label]="'Cities'" [arrow]="false"
+        <material-angular-select [data]="cities" [label]="'Cities'" [arrow]="false"
                                  [isFloatingLabel]="false"></material-angular-select>
       </div>
       <div class="mdl-cell--6-col">
         <h6>Simple select with arrow</h6>
-        <material-angular-select [data]="data" [label]="'Cities'" [isFloatingLabel]="false"></material-angular-select>
+        <material-angular-select [data]="cities" [label]="'Cities'" [isFloatingLabel]="false"></material-angular-select>
       </div>
+    </div>
+    <div class="mdl-grid">
+
       <div class="mdl-cell--6-col">
         <h6>With floating label</h6>
-        <material-angular-select [data]="data" [label]="'Cities'" [arrow]="false"
+        <material-angular-select [data]="cities" [label]="'Cities'" [arrow]="false"
                                  [isFloatingLabel]="true"></material-angular-select>
       </div>
       <div class="mdl-cell--6-col">
         <h6>Floating label with arrow</h6>
-        <material-angular-select [data]="data" [label]="'Cities'"></material-angular-select>
+        <material-angular-select [data]="cities" [label]="'Cities'"></material-angular-select>
       </div>
+    </div>
+    <div class="mdl-grid">
       <div class="mdl-cell--6-col">
         <h6>Fixed height</h6>
         <material-angular-select [data]="countries" [label]="'Countries'"
@@ -33,6 +38,31 @@
                                  [currentValue]="currentValue"
                                  (selectedValue)="selectedValue($event)"></material-angular-select>
         <div class="small-text">Your selected value is <i>{{currentValue}}</i></div>
+      </div>
+    </div>
+    <div class="mdl-grid">
+      <div class="mdl-cell--6-col">
+        <h6>Disabled</h6>
+        <material-angular-select [data]="cities" [label]="'Cities'" [disabled]="true"></material-angular-select>
+      </div>
+      <div class="mdl-cell--6-col">
+        <h6>Complex value</h6>
+        <material-angular-select [data]="complexCountries" [label]="'Countries'"
+                                 [currentValue]="currentComplexValue"
+                                 [keys]="{value: 'code', title: 'name'}"
+                                 (selectedValue)="selectedComplexValue($event)"></material-angular-select>
+        <div class="small-text">
+          Your selected value name - <i>{{currentComplexValue.name}}</i>, code - <i>{{currentComplexValue.code}}</i>
+        </div>
+      </div>
+    </div>
+
+    <div class="mdl-grid">
+      <div class="mdl-cell--6-col">
+        <h6>Own style classes</h6>
+        <material-angular-select [data]="cities" [label]="'Cities'"
+                                 [classStyle]="['my-class']"
+                                 [fixHeight]="true"></material-angular-select>
       </div>
     </div>
   </div>

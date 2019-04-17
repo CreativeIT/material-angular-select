@@ -130,7 +130,7 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
         this.dataArray = this.data;
       }
     }
-    this.disabled = this.dataArray.length < 1;
+    this.disabled = this.dataArray.length < 1 || this.disabled;
   }
 
   public ngAfterViewInit() {

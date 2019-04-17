@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build-select": "ng build material-angular-select",
+    "build-select": "ng build material-angular-select && cp ./README.md ./dist/material-angular-select",
     "npm-pack": "cd dist/material-angular-select && npm pack",
     "package": "npm run build-select && npm run npm-pack"
   },

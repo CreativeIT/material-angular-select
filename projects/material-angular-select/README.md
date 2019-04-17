@@ -5,6 +5,9 @@ Angular select for [material-design-lite](https://github.com/google/material-des
 
 ![Live example](https://raw.githubusercontent.com/CreativeIT/material-angular-select/master/src/assets/live_example.gif)
 
+### JS version
+Here you can find JS based version: [getmdl-select](https://github.com/CreativeIT/getmdl-select) 
+
 ## Getting started
 ### Step 1: Install `material-angular-select`:
 ##### NPM
@@ -35,8 +38,8 @@ export class AppModule { }
 ```
 
 ### Step 3 (Optional): Include MDL
-If you don't use [material-design-lite](https://github.com/google/material-design-lite) in your project before, don't forget include needed sources.
-Follow to step from [here](https://getmdl.io/started/index.html)
+If you didn't use [material-design-lite](https://github.com/google/material-design-lite) in your project before, don't forget to include necessary sources.
+Follow steps from [here](https://getmdl.io/started/index.html)
 or
 - add dependencies in `angular.json`
 ```json
@@ -51,7 +54,7 @@ or
       ]
 ...
 ```
-- and import icons in `index.html`
+- and import icons to `index.html`
 ```html
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 ```
