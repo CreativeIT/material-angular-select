@@ -1,10 +1,9 @@
-from root
 # material-angular-select
 Angular select for [material-design-lite](https://github.com/google/material-design-lite)
 
 ## Live example
 
-![Live example](https://raw.githubusercontent.com/CreativeIT/material-angular-select/master/src/assets/live_example.gif)
+![Live example](https://raw.githubusercontent.com/CreativeIT/material-angular-select/master/src/assets/life_example.gif)
 
 ### JS version
 Here you can find JS based version: [getmdl-select](https://github.com/CreativeIT/getmdl-select) 
@@ -148,6 +147,7 @@ We are ready to bring value to your business. Visit our site [creativeit.io](htt
 ## Support the project
 * Star the repo
 * Create issue report or feature request
+* Check our [material-angular-dashboard](https://github.com/CreativeIT/material-angular-dashboard)
 * [Tweet about it](https://twitter.com/CreativeITeam)
 * Follow us on [Twitter](https://twitter.com/CreativeITeam)
 
