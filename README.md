@@ -2,8 +2,7 @@
 Angular select for [material-design-lite](https://github.com/google/material-design-lite)
 
 ## Live example
-
-![Live example](https://raw.githubusercontent.com/CreativeIT/material-angular-select/master/src/assets/life_example.gif)
+<a target="_blank" href="https://creativeit.github.io/material-angular-select/"><img src="https://raw.githubusercontent.com/CreativeIT/material-angular-select/master/src/assets/life_example.gif" alt="Live example"> </a>
 
 ### JS version
 Here you can find JS based version: [getmdl-select](https://github.com/CreativeIT/getmdl-select) 
