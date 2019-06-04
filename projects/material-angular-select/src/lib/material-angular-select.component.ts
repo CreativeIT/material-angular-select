@@ -48,10 +48,10 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
 
   public id: string;
 
-  @ViewChild('dropdown') dropdown: ElementRef;
-  @ViewChild('input') input: ElementRef;
-  @ViewChild('hiddenInput') hiddenInput: ElementRef;
-  @ViewChild('menu') menu: ElementRef;
+  @ViewChild('dropdown', { static: true }) dropdown: ElementRef;
+  @ViewChild('input', { static: true }) input: ElementRef;
+  @ViewChild('hiddenInput', { static: false }) hiddenInput: ElementRef;
+  @ViewChild('menu', { static: true }) menu: ElementRef;
   @ViewChildren('li') list: QueryList<ElementRef>;
 
   private opened = false;
@@ -149,14 +149,14 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
 
     this.isKeyNavigation = true;
     const isVisible = this.menu.nativeElement.parentElement.classList.contains('is-visible');
-    switch (event.keyCode) {
-      case 38: // arrow up
+    switch (event.code) {
+      case 'ArrowUp':
         this.arrowkeyLocation = this.arrowkeyLocation > 0 ? this.arrowkeyLocation - 1 : this.dataArray.length - 1;
         break;
-      case 40: // arrow down
+      case 'ArrowDown':
         this.arrowkeyLocation = this.arrowkeyLocation >= (this.dataArray.length - 1) ? 0 : this.arrowkeyLocation + 1;
         break;
-      case 13: // enter
+      case 'Enter':
         if (isVisible) {
           this.setCurrentValue(this.data[this.arrowkeyLocation]);
           this.closeMenu();
@@ -164,7 +164,7 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
           this.openMenu();
         }
         break;
-      case 27: // esc
+      case 'Escape':
         this.closeMenu();
         break;
     }
@@ -172,8 +172,8 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
 
   public keyDownTab(event) {
     const isVisible = this.menu.nativeElement.parentElement.classList.contains('is-visible');
-    switch (event.keyCode) {
-      case 9: // tab
+    switch (event.code) {
+      case 'Tab':
         if (isVisible) {
           this.closeMenu();
         }
@@ -199,7 +199,7 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
 
   private openMenu() {
     this.arrowkeyLocation = this.dataArray.findIndex(item => item[this.keys.value] === this.currentValue[this.keys.value]);
-    this.menu.nativeElement['MaterialMenu'].show();
+    this.menu.nativeElement.MaterialMenu.show();
     this.isFocused = true;
     this.opened = true;
   }
@@ -213,8 +213,8 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
   private hideAllMenu() {
     const allSelects = document.querySelectorAll('.material-angular-select') as any;
     allSelects.forEach((select: HTMLElement) => {
-      const menu = select.querySelector('.mdl-js-menu');
-      menu['MaterialMenu'].hide();
+      const menu = select.querySelector('.mdl-js-menu') as any;
+      menu.MaterialMenu.hide();
     });
   }
 
@@ -233,7 +233,7 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
     if ('createEvent' in document) {
       const evt = document.createEvent('HTMLEvents');
       evt.initEvent('change', false, true);
-      this.menu.nativeElement['MaterialMenu'].hide();
+      this.menu.nativeElement.MaterialMenu.hide();
       this.input.nativeElement.dispatchEvent(evt);
     } else {
       this.input.nativeElement.fireEvent('onchange');
