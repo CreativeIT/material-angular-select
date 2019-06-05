@@ -1,7 +1,3 @@
-import 'material-design-lite/material';
-
-declare var componentHandler: any;
-
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -18,6 +14,9 @@ import {
   ViewChildren,
   ViewEncapsulation,
 } from '@angular/core';
+
+import { MaterialMenu } from './mdl/material-menu';
+import { MaterialTextfield } from './mdl/material-textfield';
 
 @Component({
   selector: 'material-angular-select', // tslint:disable-line
@@ -62,8 +61,23 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
   public arrowkeyLocation = 0;
   public isKeyNavigation = false;
 
-  public constructor(private changeDetector: ChangeDetectorRef) {
+  private registeredComponents = [];
+  private componentConfigProperty = 'mdlComponentConfigInternal_';
+  private createdComponents = [];
 
+  public constructor(private changeDetector: ChangeDetectorRef) {
+    this.register({
+      constructor: MaterialMenu,
+      classAsString: 'MaterialMenu',
+      cssClass: 'mas-js-menu',
+      widget: true
+    });
+    this.register({
+      constructor: MaterialTextfield,
+      classAsString: 'MaterialTextfield',
+      cssClass: 'mas-js-textfield',
+      widget: true
+    });
   }
 
   public ngOnInit() {
@@ -98,7 +112,102 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
     if (!changes.hasOwnProperty('name')) {
       this.name = (this.name === '') ? this.label.replace(/\s/g, '') : this.name;
     }
-    componentHandler.upgradeElements(this.dropdown.nativeElement);
+    this.upgradeElements(this.dropdown.nativeElement);
+  }
+
+  private upgradeElements(elements) {
+    if (!Array.isArray(elements)) {
+      if (elements instanceof Element) {
+        elements = [elements];
+      } else {
+        elements = Array.prototype.slice.call(elements);
+      }
+    }
+    for (const element of elements) {
+      if (element instanceof HTMLElement) {
+        this.upgradeElement(element);
+        if (element.children.length > 0) {
+          this.upgradeElements(element.children);
+        }
+      }
+    }
+  }
+
+  private upgradeElement(element, optJsClass?) {
+    // Verify argument type.
+    if (!(typeof element === 'object' && element instanceof Element)) {
+      throw new Error('Invalid argument provided to upgrade MDL element.');
+    }
+    // Allow upgrade to be canceled by canceling emitted event.
+    const upgradingEv = this.createEvent_('mas-componentupgrading', true, true);
+    element.dispatchEvent(upgradingEv);
+    if (upgradingEv.defaultPrevented) {
+      return;
+    }
+
+    const upgradedList = this.getUpgradedListOfElement_(element);
+    const classesToUpgrade = [];
+    // If jsClass is not provided scan the registered components to find the
+    // ones matching the element's CSS classList.
+    if (!optJsClass) {
+      const classList = element.classList;
+      this.registeredComponents.forEach((component) => {
+        // Match CSS & Not to be upgraded & Not upgraded.
+        if (classList.contains(component.cssClass) &&
+          classesToUpgrade.indexOf(component) === -1 &&
+          !this.isElementUpgraded_(element, component.className)) {
+          classesToUpgrade.push(component);
+        }
+      });
+    } else if (!this.isElementUpgraded_(element, optJsClass)) {
+      classesToUpgrade.push(this.findRegisteredClass_(optJsClass));
+    }
+
+    // Upgrade the element for each classes.
+    for (const registeredClass of classesToUpgrade) {
+      if (registeredClass) {
+        // Mark element as upgraded.
+        upgradedList.push(registeredClass.className);
+        element.setAttribute('data-upgraded', upgradedList.join(','));
+        const instance = new registeredClass.classConstructor(element);
+        instance[this.componentConfigProperty] = registeredClass;
+        this.createdComponents.push(instance);
+        // Call any callbacks the user has registered with this component type.
+        for (const callback of registeredClass.callbacks) {
+          callback(element);
+        }
+
+        if (registeredClass.widget) {
+          // Assign per element instance for control over API
+          element[registeredClass.className] = instance;
+        }
+      } else {
+        throw new Error(
+          'Unable to find a registered component for the given class.');
+      }
+
+      const upgradedEv = this.createEvent_('mas-componentupgraded', true, false);
+      element.dispatchEvent(upgradedEv);
+    }
+  }
+
+  private createEvent_(eventType, bubbles, cancelable) {
+    if ('CustomEvent' in window && typeof (window as any).CustomEvent === 'function') {
+      return new CustomEvent(eventType, {
+        bubbles,
+        cancelable,
+      });
+    } else {
+      const ev = document.createEvent('Events');
+      ev.initEvent(eventType, bubbles, cancelable);
+      return ev;
+    }
+  }
+
+  private getUpgradedListOfElement_(element) {
+    const dataUpgraded = element.getAttribute('data-upgraded');
+    // Use `['']` as default value to conform the `,name,name...` style.
+    return dataUpgraded === null ? [''] : dataUpgraded.split(',');
   }
 
   private setCurrentValue(item) {
@@ -112,6 +221,67 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
       };
     } else {
       this.currentValue = item;
+    }
+  }
+
+  private isElementUpgraded_(element, jsClass) {
+    const upgradedList = this.getUpgradedListOfElement_(element);
+    return upgradedList.indexOf(jsClass) !== -1;
+  }
+
+  private findRegisteredClass_(name, optReplace?) {
+    for (let i = 0; i < this.registeredComponents.length; i++) {
+      if (this.registeredComponents[i].className === name) {
+        if (typeof optReplace !== 'undefined') {
+          this.registeredComponents[i] = optReplace;
+        }
+        return this.registeredComponents[i];
+      }
+    }
+    return false;
+  }
+
+  private register(config) {
+    // In order to support both Closure-compiled and uncompiled code accessing
+    // this method, we need to allow for both the dot and array syntax for
+    // property access. You'll therefore see the `foo.bar || foo['bar']`
+    // pattern repeated across this method.
+    const widgetMissing = (typeof config.widget === 'undefined' &&
+      typeof config.widget === 'undefined');
+    let widget = true;
+
+    if (!widgetMissing) {
+      widget = config.widget || config.widget;
+    }
+
+    const newConfig = ({
+      classConstructor: config.constructor || config.constructor,
+      className: config.classAsString || config.classAsString,
+      cssClass: config.cssClass || config.cssClass,
+      widget,
+      callbacks: []
+    });
+
+    this.registeredComponents.forEach((item) => {
+      if (item.cssClass === newConfig.cssClass) {
+        throw new Error('The provided cssClass has already been registered: ' + item.cssClass);
+      }
+      if (item.className === newConfig.className) {
+        throw new Error('The provided className has already been registered');
+      }
+    });
+
+    if (config.constructor.prototype
+      .hasOwnProperty(this.componentConfigProperty)) {
+      throw new Error(
+        'MDL component classes must not have ' + this.componentConfigProperty +
+        ' defined as a property.');
+    }
+
+    const found = this.findRegisteredClass_(config.classAsString, newConfig);
+
+    if (!found) {
+      this.registeredComponents.push(newConfig);
     }
   }
 
@@ -213,7 +383,7 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
   private hideAllMenu() {
     const allSelects = document.querySelectorAll('.material-angular-select') as any;
     allSelects.forEach((select: HTMLElement) => {
-      const menu = select.querySelector('.mdl-js-menu') as any;
+      const menu = select.querySelector('.mas-js-menu') as any;
       menu.MaterialMenu.hide();
     });
   }
