@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { MaterialAngularSelectModule } from '../../projects/material-angular-select/src/lib/material-angular-select.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -11,6 +12,7 @@ import { MaterialAngularSelectModule } from '../../projects/material-angular-sel
   imports: [
     BrowserModule,
     MaterialAngularSelectModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

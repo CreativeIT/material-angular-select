@@ -3,7 +3,7 @@
      data-size="large" data-show-count="true" aria-label="Star CreativeIT/material-angular-select on GitHub">Star</a>
 </div>
 
-<div class="mdl-grid">
+<div class="mdl-grid" [formGroup]="form">
   <div class="mdl-cell--8-col" style="text-align:left; margin: 0 auto">
     <h2>
       Welcome to {{ title }}!
@@ -69,7 +69,12 @@
                                  [classStyle]="['my-class']"
                                  [fixHeight]="true"></material-angular-select>
       </div>
+
+      <div class="mdl-cell--6-col">
+        <h6>Reactive component</h6>
+        <material-angular-select [data]="cities" [label]="'Cities'"
+                                 formControlName="reactive"></material-angular-select>
+      </div>
     </div>
   </div>
 </div>
-

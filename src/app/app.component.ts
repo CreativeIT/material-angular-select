@@ -1,4 +1,5 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -6,7 +7,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'material-angular-select';
   cities = ['Minsk', 'Berlin', 'Moscow', 'NYC'];
   currentValue = 'Minsk';
@@ -18,6 +19,15 @@ export class AppComponent {
     { name: 'Finland', code: 'FI' }];
 
   currentComplexValue = this.complexCountries[2];
+
+  form;
+
+  ngOnInit() {
+    this.form = new FormGroup({
+      reactive: new FormControl(),
+    });
+    this.form.valueChanges.subscribe((next) => console.log('Reactive form has changed', next));
+  }
 
   selectedValue(data: { title: string, value: string }) {
     this.currentValue = data.title;

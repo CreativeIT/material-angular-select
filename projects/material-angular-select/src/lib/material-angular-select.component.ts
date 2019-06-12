@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  forwardRef,
   Input,
   OnChanges,
   OnInit,
@@ -17,15 +18,23 @@ import {
 
 import { MaterialMenu } from './mdl/material-menu';
 import { MaterialTextfield } from './mdl/material-textfield';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'material-angular-select', // tslint:disable-line
   styleUrls: ['./material-angular-select.component.scss'],
   templateUrl: './material-angular-select.component.html',
   encapsulation: ViewEncapsulation.None, // tslint:disable-line
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => MaterialAngularSelectComponent),
+      multi: true,
+    },
+  ],
 })
 
-export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterViewInit {
+export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterViewInit, ControlValueAccessor {
   @Input() public data: any[] = [];
   @Input() public label = '';
   @Input() public name = '';
@@ -65,6 +74,9 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
   private componentConfigProperty = 'mdlComponentConfigInternal_';
   private createdComponents = [];
 
+  onChange: (_: any) => void = () => {};
+  onTouched: () => void = () => {};
+
   public constructor(private changeDetector: ChangeDetectorRef) {
     this.register({
       constructor: MaterialMenu,
@@ -78,6 +90,22 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
       cssClass: 'mas-js-textfield',
       widget: true
     });
+  }
+
+  writeValue(value: any): void {
+    this.setCurrentValue(value);
+  }
+
+  registerOnChange(fn: (value: any) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
   }
 
   public ngOnInit() {
@@ -94,7 +122,7 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
 
     if (changes.hasOwnProperty('data')) {
       if (!this.isViewInit) {
-        this.todoAfterInit.push(this.loadData.bind(this));
+        this.todoAfterInit.push(() => this.loadData());
       } else {
         this.loadData();
       }
@@ -102,7 +130,7 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
 
     if (changes.hasOwnProperty('currentValue')) {
       if (!this.isViewInit) {
-        this.todoAfterInit.push(this.setCurrentValue.bind(this, changes.currentValue.currentValue));
+        this.todoAfterInit.push(() => this.setCurrentValue(changes.currentValue.currentValue));
       } else {
         this.setCurrentValue(changes.currentValue.currentValue);
         this.setSelectedItem(this.currentValue);
@@ -305,7 +333,7 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
 
   public ngAfterViewInit() {
     this.isViewInit = true;
-    this.todoAfterInit.forEach(func => func.call());
+    this.todoAfterInit.forEach(func => func());
     this.todoAfterInit = [];
     this.setSelectedItem(this.currentValue);
     this.changeDetector.detectChanges();
@@ -397,8 +425,7 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
     this.dropdown.nativeElement.MaterialTextfield.change(this.currentValue[this.keys.title]); // handles css class changes
     setTimeout(() => {
       this.dropdown.nativeElement.MaterialTextfield.updateClasses_(); // update css class
-    },
-               250);
+    }, 250);
 
     if ('createEvent' in document) {
       const evt = document.createEvent('HTMLEvents');
@@ -408,5 +435,6 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
     } else {
       this.input.nativeElement.fireEvent('onchange');
     }
+    setTimeout(() => this.onChange(item), 0);
   }
 }

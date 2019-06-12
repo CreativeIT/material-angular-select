@@ -1,7 +1,8 @@
 <div #dropdown class="mas-textfield mas-js-textfield material-angular-select"
      [class.is-focused]="isFocused"
      [class.mas-textfield--floating-label]="isFloatingLabel"
-     [class.material-angular-select__fix-height]="fixHeight">
+     [class.material-angular-select__fix-height]="fixHeight"
+     (blur)="onTouched()">
   <input #input
          (click)="onInputClick($event)"
          (keyup)="menuKeyDown($event)"
