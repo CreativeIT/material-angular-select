@@ -51,10 +51,9 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
     [this.keys.title]: '',
     [this.keys.value]: '',
   };
+  @Input() public inputId: string;
 
   @Output() public selectedValue = new EventEmitter();
-
-  public id: string;
 
   @ViewChild('dropdown', { static: true }) dropdown: ElementRef;
   @ViewChild('input', { static: true }) input: ElementRef;
@@ -109,7 +108,7 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
   }
 
   public ngOnInit() {
-    this.id = `id-${this.name}-${Math.round(Math.random() * 100 + 100)}`;
+    this.inputId = `id-${this.name}-${Math.round(Math.random() * 100 + 100)}`;
     this.changeDetector.detach();
   }
 
