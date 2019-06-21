@@ -408,4 +408,34 @@ MaterialMenu.prototype.toggle = function (evt) {
 };
 MaterialMenu.prototype['toggle'] = MaterialMenu.prototype.toggle;
 
+MaterialMenu.prototype.updateClip = function () {
+  if (this.element_ && this.container_ && this.outline_) {
+    // Measure the inner element.
+    var height = this.element_.getBoundingClientRect().height;
+    var width = this.element_.getBoundingClientRect().width;
+    // Apply the inner element's size to the container and outline.
+    this.container_.style.width = width + 'px';
+    this.container_.style.height = height + 'px';
+    this.outline_.style.width = width + 'px';
+    this.outline_.style.height = height + 'px';
+    // Apply the initial clip to the text before we start animating.
+    this.applyClip_(height, width);
+    // Wait for the next frame, turn on animation, and apply the final clip.
+    // Also make it visible. This triggers the transitions.
+    window.requestAnimationFrame(function () {
+      this.element_.style.clip = 'rect(0 ' + width + 'px ' + height + 'px 0)';
+      this.container_.classList.add(this.CssClasses_.IS_VISIBLE);
+    }.bind(this));
+    // Clean up after the animation is complete.
+    this.addAnimationEndListener_();
+    // Add a click listener to the document, to close the menu.
+    var callback = function (e) {
+      document.removeEventListener('click', callback);
+      this.hide();
+    }.bind(this);
+    document.addEventListener('click', callback);
+  }
+};
+MaterialMenu.prototype['updateClip'] = MaterialMenu.prototype.updateClip;
+
 export { MaterialMenu };

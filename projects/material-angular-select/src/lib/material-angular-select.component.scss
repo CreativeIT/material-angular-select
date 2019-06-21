@@ -12,7 +12,7 @@ $getmdl-select-height: 288px !default;
 $getmdl-select-scrollbar-thumb: #666 !default;
 $getmdl-select-scrollbar-track: #999 !default;
 
-material-angular-select {
+material-angular-select, material-angular-select-typeahead {
   display: block;
   outline: none;
   width: 100%;

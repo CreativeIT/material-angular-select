@@ -25,6 +25,7 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.form = new FormGroup({
       reactive: new FormControl(),
+      typeahead: new FormControl(),
     });
     this.form.valueChanges.subscribe((next) => console.log('Reactive form has changed', next));
   }
