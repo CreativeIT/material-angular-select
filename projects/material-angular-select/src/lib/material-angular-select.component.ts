@@ -52,6 +52,7 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
     [this.keys.value]: '',
   };
   @Input() public inputId: string;
+  @Input() public typeahead = false;
 
   @Output() public selectedValue = new EventEmitter();
 
@@ -72,6 +73,21 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
   private registeredComponents = [];
   private componentConfigProperty = 'mdlComponentConfigInternal_';
   private createdComponents = [];
+
+  public selectedDataArray = [];
+
+  @Input() public selector(value: string, dataArray) {
+    if (!value) {
+      return dataArray;
+    } else {
+      return dataArray.filter(
+        row => (
+          row[this.keys.value].toLowerCase().includes(value.toLowerCase())
+          || row[this.keys.title].toLowerCase().includes(value.toLowerCase())
+        ),
+      );
+    }
+  }
 
   onChange: (_: any) => void = () => {};
   onTouched: () => void = () => {};
@@ -327,6 +343,7 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
         this.dataArray = this.data;
       }
     }
+    this.selectedDataArray = this.selector(this.input.nativeElement.value, this.dataArray);
     this.disabled = this.dataArray.length < 1 || this.disabled;
   }
 
@@ -364,6 +381,9 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
       case 'Escape':
         this.closeMenu();
         break;
+      default:
+        this.reselectData();
+        break;
     }
   }
 
@@ -387,11 +407,17 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
     const isVisible = this.menu.nativeElement.parentElement.classList.contains('is-visible');
     this.hideAllMenu();
     if (!isVisible) {
+      this.reselectData();
       this.openMenu();
     } else {
       this.isFocused = false;
       this.opened = false;
     }
+  }
+
+  private reselectData() {
+    this.selectedDataArray = this.selector(this.input.nativeElement.value, this.dataArray);
+    setTimeout(() => this.menu.nativeElement.MaterialMenu.updateClip(), 0);
   }
 
   private openMenu() {

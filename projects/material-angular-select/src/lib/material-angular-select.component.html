@@ -9,13 +9,13 @@
          (keydown)="keyDownTab($event)"
          (mouseenter)="isKeyNavigation = false;"
          class="mas-textfield__input" type="text"
-         [id]="inputId" tabindex="0" readonly
+         [id]="inputId" tabindex="0" [readOnly]="!typeahead"
          [value]="(disabled)? '' : currentValue[keys.title]"
          [disabled]="disabled"/>
   <input #hiddenInput tabindex="-1" type="hidden" [name]="name" [value]="(disabled) ? '': currentValue[keys.value]"/>
   <label class="mas-textfield__label" [for]="inputId">{{ label }}</label>
   <ul #menu class="mas-menu mas-menu--bottom-left mas-js-menu">
-    <li #li *ngFor="let item of dataArray; index as i;" [attr.data-val]="item[keys.value]" class="mas-menu__item"
+    <li #li *ngFor="let item of selectedDataArray; index as i;" [attr.data-val]="item[keys.value]" class="mas-menu__item"
         (click)="setSelectedItem(item)"
         [ngClass]="{'is-item-hover': i === arrowkeyLocation && isKeyNavigation }"
         tabindex="-1">
