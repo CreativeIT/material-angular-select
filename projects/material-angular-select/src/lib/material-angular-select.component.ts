@@ -76,14 +76,14 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
 
   public selectedDataArray = [];
 
-  @Input() public selector(value: string, dataArray) {
-    if (!value) {
+  @Input() public selector(query: string, dataArray: any[]) {
+    if (!query) {
       return dataArray;
     } else {
       return dataArray.filter(
         row => (
-          row[this.keys.value].toLowerCase().includes(value.toLowerCase())
-          || row[this.keys.title].toLowerCase().includes(value.toLowerCase())
+          row[this.keys.value].toLowerCase().includes(query.toLowerCase())
+          || row[this.keys.title].toLowerCase().includes(query.toLowerCase())
         ),
       );
     }
@@ -124,7 +124,7 @@ export class MaterialAngularSelectComponent implements OnInit, OnChanges, AfterV
   }
 
   public ngOnInit() {
-    this.inputId = `id-${this.name}-${Math.round(Math.random() * 100 + 100)}`;
+    this.inputId = this.inputId || `id-${this.name}-${Math.round(Math.random() * 100 + 100)}`;
     this.changeDetector.detach();
   }
 

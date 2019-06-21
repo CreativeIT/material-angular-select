@@ -1,5 +1,5 @@
 # material-angular-select
-Angular select for [material-design-lite](https://github.com/google/material-design-lite)
+Angular material select
 
 ## Live example
 <a target="_blank" href="https://creativeit.github.io/material-angular-select/"><img src="https://raw.githubusercontent.com/CreativeIT/material-angular-select/master/src/assets/life_example.gif" alt="Live example"> </a>
@@ -20,6 +20,10 @@ yarn add material-angular-select
 ```
 ### Step 2: Import the MaterialAngularSelectModule
 ```typescript
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+
+import { AppComponent } from './app.component';
 import { MaterialAngularSelectModule } from 'material-angular-select';
 
 @NgModule({
@@ -36,39 +40,16 @@ import { MaterialAngularSelectModule } from 'material-angular-select';
 export class AppModule { }
 ```
 
-### Step 3 (Optional): Include MDL
-If you didn't use [material-design-lite](https://github.com/google/material-design-lite) in your project before, don't forget to include necessary sources.
-Follow steps from [here](https://getmdl.io/started/index.html)
-or
-- add dependencies in `angular.json`
-```json
-...
-  "build": {
-    "options": {
-      "styles": [
-        "node_modules/material-design-lite/src/material-design-lite.scss"
-      ],
-      "scripts": [
-        "node_modules/material-design-lite/material.js"
-      ]
-...
-```
-- and import icons to `index.html`
-```html
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-```
-
-
 ## Sample implementation
 
 **```app.module.ts```**
 
-```javascript
+```typescript
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { MaterialAngularSelectModule } from 'angular-ratify';
+import { MaterialAngularSelectModule } from 'material-angular-select';
 
 @NgModule({
   declarations: [
@@ -88,16 +69,16 @@ export class AppModule { }
 **```app.component.html```**
 
 ```html
- <material-angular-select [data]="countries"
-                   [label]="'Location'"
-                   [name]="'country'"
-                   [currentValue]="locationValue"
-                   (selectedValue)="changeCountry($event)"></material-angular-select>
+<material-angular-select [data]="countries"
+                         [label]="'Location'"
+                         [name]="'country'"
+                         [currentValue]="locationValue"
+                         (selectedValue)="changeCountry($event)"></material-angular-select>
 ```
 
 **```app.component.ts```**
 
-```javascript
+```typescript
 import { Component } from '@angular/core';
 
 @Component({
@@ -117,6 +98,62 @@ export class AppComponent {
 
 ```
 
+Reactive forms are also supported:
+
+**```app.module.ts```**
+
+```typescript
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+
+import { AppComponent } from './app.component';
+import { MaterialAngularSelectModule } from 'material-angular-select';
+import { ReactiveFormsModule } from '@angular/forms';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    MaterialAngularSelectModule,
+    ReactiveFormsModule,
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+```
+
+**```app.component.html```**
+
+```html
+<material-angular-select [data]="countries"
+                         [label]="'Location'"
+                         [name]="'country'"
+                         [formControl]="country"></material-angular-select>
+```
+
+**```app.component.ts```**
+
+```typescript
+import { Component } from '@angular/core';
+import { FormControl } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+
+  public readonly countries = ['Minsk', 'Berlin', 'Moscow', 'NYC'];
+  public country = new FormControl();
+}
+
+```
+
 ## API
 
 ### Inputs
@@ -132,6 +169,9 @@ export class AppComponent {
 | [classStyle] | Array<string> | null | no | Added own classes to dropdown element  |
 | keys | {value: string, title: string} | {value: 'value', title: 'title'} | yes | Required if use array of object with different structure |
 | currentValue | string or {title: any, value: any} | {title: '', value: ''} | no | Set default value |
+| inputId | string | \`id-${this.name}-${Math.round(Math.random() * 100 + 100)}\` | no | id attribute for input element |
+| typeahead | boolean | false | no | Allows to type search query in input |
+| [selector] | (query: string, dataArray: any) | _looking for substring of query in dataArray items_ | no | Allows to specify search function for typeahead |
 
 ### Outputs
 | Output | Description |
